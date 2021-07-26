@@ -9,11 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-<<<<<<< HEAD
-      title: 'Openhuis App',
-=======
-      title: 'Flutter Demo',
->>>>>>> df45070fa3797c05ad73a5271df32ab5959ae5e9
+      title: 'Openhuis Appie',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -24,11 +20,7 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-<<<<<<< HEAD
-        primarySwatch: Colors.lightGreen,
-=======
         primarySwatch: Colors.blue,
->>>>>>> df45070fa3797c05ad73a5271df32ab5959ae5e9
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
