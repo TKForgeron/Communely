@@ -1,11 +1,20 @@
 {
+<<<<<<< HEAD
     "name": "flutter_openhuisapp",
     "short_name": "flutter_openhuisapp",
+=======
+    "name": "first_app",
+    "short_name": "first_app",
+>>>>>>> df45070fa3797c05ad73a5271df32ab5959ae5e9
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
+<<<<<<< HEAD
     "description": "The Openhuis community living app. Built using Flutter.",
+=======
+    "description": "A new Flutter project.",
+>>>>>>> df45070fa3797c05ad73a5271df32ab5959ae5e9
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

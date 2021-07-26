@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 # flutter_openhuisapp
 
 The Openhuis community living app. Built using Flutter.
+=======
+# first_app
+
+A new Flutter project.
+>>>>>>> df45070fa3797c05ad73a5271df32ab5959ae5e9
 
 ## Getting Started
 

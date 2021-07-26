@@ -1,5 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<<<<<<< HEAD
     package="com.theforgeron.openhuisapp.flutter_openhuisapp">
+=======
+    package="com.example.first_app">
+>>>>>>> df45070fa3797c05ad73a5271df32ab5959ae5e9
     <!-- Flutter needs it to communicate with the running application
          to allow setting breakpoints, to provide hot reload, etc.
     -->

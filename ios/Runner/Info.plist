@@ -11,7 +11,11 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
+<<<<<<< HEAD
 	<string>flutter_openhuisapp</string>
+=======
+	<string>first_app</string>
+>>>>>>> df45070fa3797c05ad73a5271df32ab5959ae5e9
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
