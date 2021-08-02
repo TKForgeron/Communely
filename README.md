@@ -1,4 +1,4 @@
-# flutter_openhuisapp
+# openhuis_app
 
 A new Flutter project.
 

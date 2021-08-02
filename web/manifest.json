@@ -1,6 +1,6 @@
 {
-    "name": "flutter_openhuisapp",
-    "short_name": "flutter_openhuisapp",
+    "name": "openhuis_app",
+    "short_name": "openhuis_app",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
