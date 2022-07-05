@@ -1,4 +1,4 @@
-version: "3.6"
+version: "3.8"
 # Deploys MongoDB with customization scripts and container with Mongo client
 # https://fabianlee.org/2018/05/20/docker-using-docker-compose-to-link-a-mongodb-server-and-client/
 #
@@ -12,31 +12,34 @@ services:
     container_name: quotes-mongodb
     ports:
       - 27017:27017
+    volumes:
+      # seeding scripts
+      # - ./mongo-entrypoint:/docker-entrypoint-initdb.d
+      # # named volumes
+      # - mongodb:/data/db
+      # - mongoconfig:/data/configdb
+      - data:/data
     environment:
       - MONGO_INITDB_DATABASE=test
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin
-    volumes:
-      # seeding scripts
-      - ./mongo-entrypoint:/docker-entrypoint-initdb.d
-      # named volumes
-      - mongodb:/data/db
-      - mongoconfig:/data/configdb
-    networks:
-      - mongo_net
+    # networks:
+    #   - mongo_net
 
   quotes-mongo-express:
     # build will get tagged with 'image'
     image: mongo-express
     container_name: my-mongoclient
     restart: always
-    ports: 8081:8081
+    ports: 
+      - 8081:8081
     environment:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=rootuser
-      - MONGO_SERVER=my-mongodb
-      - MONGO_INITDB_DATABASE=test
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=rootpass
+      - ME_CONFIG_MONGODB_SERVER=quotes-mongodb
+      # - MONGO_INITDB_DATABASE=test
+      # - MONGO_INITDB_ROOT_USERNAME=admin
+      # - MONGO_INITDB_ROOT_PASSWORD=admin
 
 volumes:
   data: {}
