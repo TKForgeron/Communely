@@ -51,9 +51,9 @@ app.use((err, req, res, next) => {
   res.status(500).send(`Server error: ${err}`);
 });
 const server = app.listen(port, () => {
-  console.log(`Server Listening on port ${port}`);
+  console.log(`Server listening on port ${port}`);
 });
 
 server.on("connection", (socket) => {
-  console.log("New Connection...");
+  console.log(`New connection...`);
 });

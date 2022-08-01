@@ -12,24 +12,31 @@ function addDays(date, days) {
 // Function that applies regex and parses datestrings
 function checkParseCleanDate(dateString, sep = "-") {
   const errorMessage =
-    "Date passed was not formatted correctly. Please use the following format: DD-MM-YYYY, e.g. 30-07-2022";
+    "Date passed was not formatted correctly. Please use the following format: YYYY-MM-DD, e.g. 2022-12-31";
 
   if (dateString.length != 10) {
     throw new Error(errorMessage);
   }
 
   const regexForDate =
-    /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+    /^([0-9]{4})-?(1[0-2]|0[1-9])-?(3[01]|0[1-9]|[12][0-9])$/;
   const reMatches = dateString.match(regexForDate);
   if (!reMatches) {
     throw new Error(errorMessage);
   }
   const validDateString = reMatches[dateString.search(regexForDate)];
-  let dateStringList = validDateString.split(sep);
-  dateStringList = dateStringList.reverse();
-  console.log(dateStringList);
-  const finalDateObj = new Date(dateStringList);
-  finalDateObj.setHours(0, 0, 0, 0);
+  const dateStringList = validDateString.split(sep);
+  const dateObjUTC0 = new Date(
+    Date.UTC(
+      dateStringList[0],
+      dateStringList[1] - 1,
+      dateStringList[2],
+      0,
+      0,
+      0,
+      0
+    )
+  );
 
-  return finalDateObj;
+  return dateObjUTC0;
 }

@@ -10,6 +10,7 @@ module.exports = {
   updateMealToday,
   updateMealOnDate,
   removeMealOnId,
+  removeMealsOnTitle,
 };
 
 async function addMeal(req, res) {
@@ -19,7 +20,7 @@ async function addMeal(req, res) {
   try {
     const meal = new Meal({
       title: req.body.title,
-      date: helpers.checkParseCleanDate(req.body.date),
+      date: helpers.checkParseCleanDate(req.body.date).toString(),
       //   date: req.body.date,
       guests: req.body.guests,
     });
@@ -119,6 +120,7 @@ async function updateMealOnDate(req, res) {
         $lt: helpers.addDays(finalDateObj, 1),
       },
     });
+    console.log(helpers.addDays(finalDateObj, 1).toString());
 
     console.log(meal);
 
@@ -140,6 +142,18 @@ async function removeMealOnId(req, res) {
   try {
     const removedMeal = await Meal.findByIdAndRemove(req.params.id);
     res.status(200).json(removedMeal);
+  } catch (e) {
+    res.json({ message: e.message });
+  }
+}
+
+async function removeMealsOnTitle(req, res) {
+  try {
+    const toBeRemovedMeals = await Meal.where("title").equals(req.params.title);
+    await toBeRemovedMeals.forEach((meal) => {
+      meal.remove();
+    });
+    res.status(200).json(toBeRemovedMeals);
   } catch (e) {
     res.json({ message: e.message });
   }

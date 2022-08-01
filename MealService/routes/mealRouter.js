@@ -23,7 +23,10 @@ router.patch("/update/today", mealController.updateMealToday);
 // Updates meal on date
 router.patch("/update/:date", mealController.updateMealOnDate);
 
-// Drops meal on id
-router.delete("/delete/:id", mealController.removeMealOnId);
+// Removes meal on id
+router.delete("/delete/id/:id", mealController.removeMealOnId);
+
+// Removes meal on id
+router.delete("/delete/:title", mealController.removeMealsOnTitle); // FOR DEBUGGING ONLY
 
 module.exports = router;
