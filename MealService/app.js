@@ -9,7 +9,7 @@ const bodyParser = require("body-parser");
 require("dotenv/config");
 
 const app = express();
-const port = process.env.PORT || 8015;
+const port = process.env.NODEJS_PORT || 8015;
 
 // View Engine
 // app.set('views', path.join(__dirname, 'views'));
@@ -38,17 +38,17 @@ app.use(
 );
 
 // Routers
-app.use("/meal", require("./routes/meal"));
+app.use("/meal", require("./routes/mealRouter"));
 
 // DB Connection
 mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true })
-  .then(() => console.log(`Connected to DB`))
+  .then()
   .catch((e) => console.log(e));
 
 // Minimal error Handler
 app.use((err, req, res, next) => {
-  res.status(500).send("Server error");
+  res.status(500).send(`Server error: ${err}`);
 });
 const server = app.listen(port, () => {
   console.log(`Server Listening on port ${port}`);

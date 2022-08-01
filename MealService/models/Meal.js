@@ -7,7 +7,7 @@ const mealSchema = mongoose.Schema({
     type: Date,
     required: true,
     unique: true,
-    // default: Date.now,
+    // default: Date.now, // without it, dates are always saved in with consistent h:m:s:ms values
   },
   guests: [
     {
