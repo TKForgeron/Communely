@@ -14,13 +14,17 @@ module.exports = {
 };
 
 async function addMeal(req, res) {
-  //   console.log(req.body.date);
-  //   console.log(typeof req.body.date);
-
   try {
     const meal = new Meal({
       title: req.body.title,
-      date: helpers.checkParseCleanDate(req.body.date).toString(),
+      date: helpers
+        .checkParseCleanDate(
+          (dateString = req.body.date),
+          (sep = "-"),
+          (monthStart = 1),
+          (dayStart = 0)
+        )
+        .toString(),
       //   date: req.body.date,
       guests: req.body.guests,
     });
@@ -74,7 +78,12 @@ async function retrievePreviousNMeals(req, res) {
 
 async function retrieveMealOnDate(req, res) {
   try {
-    const finalDateObj = helpers.checkParseCleanDate(req.params.date, "-");
+    const finalDateObj = helpers.checkParseCleanDate(
+      (dateString = req.params.date),
+      (sep = "-"),
+      (monthStart = 1),
+      (dayStart = 1)
+    ); // still adds one day to date
     const meal = await Meal.find({
       date: {
         $gte: finalDateObj,
@@ -97,6 +106,10 @@ async function updateMealToday(req, res) {
       },
     });
 
+    if (!todaysMeal) {
+      throw new Error("Could not find today's meal.");
+    }
+
     if (req.body.title) {
       todaysMeal.title = req.body.title;
     }
@@ -113,16 +126,23 @@ async function updateMealToday(req, res) {
 
 async function updateMealOnDate(req, res) {
   try {
-    const finalDateObj = helpers.checkParseCleanDate(req.params.date, "-");
+    const finalDateObj = helpers.checkParseCleanDate(
+      (dateString = req.params.date),
+      (sep = "-"),
+      (monthStart = 1),
+      (dayStart = 1)
+    );
     let [meal] = await Meal.find({
       date: {
         $gte: finalDateObj,
         $lt: helpers.addDays(finalDateObj, 1),
       },
     });
-    console.log(helpers.addDays(finalDateObj, 1).toString());
-
-    console.log(meal);
+    if (!meal) {
+      throw new Error(
+        `Could not find meal on date ${finalDateObj.toDateString()}`
+      );
+    }
 
     if (req.body.title) {
       meal.title = req.body.title;
@@ -149,11 +169,8 @@ async function removeMealOnId(req, res) {
 
 async function removeMealsOnTitle(req, res) {
   try {
-    const toBeRemovedMeals = await Meal.where("title").equals(req.params.title);
-    await toBeRemovedMeals.forEach((meal) => {
-      meal.remove();
-    });
-    res.status(200).json(toBeRemovedMeals);
+    const mealsToBeRemoved = await Meal.findByTitleAndRemove(req.params.title);
+    res.status(200).json(mealsToBeRemoved);
   } catch (e) {
     res.json({ message: e.message });
   }

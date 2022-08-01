@@ -10,7 +10,7 @@ function addDays(date, days) {
 }
 
 // Function that applies regex and parses datestrings
-function checkParseCleanDate(dateString, sep = "-") {
+function checkParseCleanDate(dateString, sep = "-", monthStart = 1, dayStart) {
   const errorMessage =
     "Date passed was not formatted correctly. Please use the following format: YYYY-MM-DD, e.g. 2022-12-31";
 
@@ -29,8 +29,8 @@ function checkParseCleanDate(dateString, sep = "-") {
   const dateObjUTC0 = new Date(
     Date.UTC(
       dateStringList[0],
-      dateStringList[1] - 1,
-      dateStringList[2],
+      dateStringList[1] - monthStart,
+      dateStringList[2] - dayStart,
       0,
       0,
       0,

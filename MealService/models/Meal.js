@@ -25,4 +25,16 @@ const mealSchema = mongoose.Schema({
   ],
 });
 
+mealSchema.statics.findByTitle = function (title) {
+  return this.where("title").equals(new RegExp(title, "i"));
+};
+
+mealSchema.statics.findByTitleAndRemove = async function (title) {
+  const mealsToBeRemoved = await this.findByTitle(title);
+  await mealsToBeRemoved.forEach((meal) => {
+    meal.remove();
+  });
+  return mealsToBeRemoved;
+};
+
 module.exports = mongoose.model("Meals", mealSchema);
