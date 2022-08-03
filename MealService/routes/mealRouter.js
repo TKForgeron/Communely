@@ -11,11 +11,14 @@ router.get("/id/:mealId", mealController.retrieveMealOnId);
 // Retrieves today's meal
 router.get("/today", mealController.retrieveMealToday);
 
-// Retrieves last n meals
-router.get("/previous/:nDays", mealController.retrievePreviousNMeals);
-
 // Retrieves a meal on date
 router.get("/:date", mealController.retrieveMealOnDate);
+
+// Retrieves previous n meals
+router.get("/previous/:nDays", mealController.retrievePreviousNMeals);
+
+// Retrieves next n meals
+router.get("/next/:nDays", mealController.retrieveNextNMeals);
 
 // Updates today's meal
 router.patch("/update/today", mealController.updateMealToday);

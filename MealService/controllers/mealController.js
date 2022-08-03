@@ -4,9 +4,10 @@ const helpers = require("./helpers");
 module.exports = {
   addMeal,
   retrieveMealOnId,
+  retrieveMealOnDate,
   retrieveMealToday,
   retrievePreviousNMeals,
-  retrieveMealOnDate,
+  retrieveNextNMeals,
   updateMealToday,
   updateMealOnDate,
   removeMealOnId,
@@ -46,33 +47,11 @@ async function retrieveMealOnId(req, res) {
 
 async function retrieveMealToday(req, res) {
   try {
-    let today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const meal = await Meal.find({
-      date: {
-        $gte: today,
-        $lt: helpers.addDays(today, 1),
-      },
-    });
-    res.json(meal);
+    const today = helpers.retrieveTodaysDate();
+    const meal = await Meal.findByDate(today);
+    res.status(200).json(meal);
   } catch (e) {
-    res.json({ message: e.message });
-  }
-}
-
-async function retrievePreviousNMeals(req, res) {
-  try {
-    let today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const meal = await Meal.find({
-      date: {
-        $gte: helpers.addDays(today, -1 * parseInt(req.params.nDays)),
-        $lt: helpers.addDays(today, 1),
-      },
-    });
-    res.json(meal);
-  } catch (e) {
-    res.json({ message: e.message });
+    res.status(500).json({ message: e.message });
   }
 }
 
@@ -82,29 +61,62 @@ async function retrieveMealOnDate(req, res) {
       (dateString = req.params.date),
       (sep = "-"),
       (monthStart = 1),
-      (dayStart = 1)
+      (dayStart = 0)
     ); // still adds one day to date
-    const meal = await Meal.find({
-      date: {
-        $gte: finalDateObj,
-        $lt: helpers.addDays(finalDateObj, 1),
-      },
-    });
+    const meal = await Meal.findByDate(finalDateObj);
     res.json(meal);
   } catch (e) {
     res.json({ message: e.message });
   }
 }
-async function updateMealToday(req, res) {
-  let today = new Date();
-  today.setHours(0, 0, 0, 0);
+
+async function retrievePreviousNMeals(req, res) {
   try {
-    let [todaysMeal] = await Meal.find({
-      date: {
-        $gte: today,
-        $lt: helpers.addDays(today, 1),
-      },
-    });
+    const nDays = Number(req.params.nDays); // better to use Number() than parseInt()
+    if (!nDays && nDays != 0) {
+      throw new Error(
+        `Could not parse given number of days, req.params.nDays: ${req.params.nDays}`
+      );
+    } else if (nDays < 1) {
+      throw new Error(
+        `Please give a positive number of days, req.params.nDays: ${req.params.nDays}`
+      );
+    }
+    const today = helpers.retrieveTodaysDate();
+    const nDaysBack = helpers.addDays(today, -nDays);
+    const meals = await Meal.findByDateBetween(nDaysBack, today);
+    res.json(meals);
+  } catch (e) {
+    res.json({ message: e.message });
+  }
+}
+
+// NOT TESTED
+async function retrieveNextNMeals(req, res) {
+  try {
+    const nDays = Number(req.params.nDays); // better to use Number() than parseInt()
+    if (!nDays && nDays != 0) {
+      throw new Error(
+        `Could not parse given number of days, req.params.nDays: ${req.params.nDays}`
+      );
+    } else if (nDays < 1) {
+      throw new Error(
+        `Please give a positive number of days, req.params.nDays: ${req.params.nDays}`
+      );
+    }
+    const today = helpers.retrieveTodaysDate();
+    const nDaysBack = helpers.addDays(today, nDays);
+    const meals = await Meal.findByDateBetween(nDaysBack, today);
+    res.json(meals);
+  } catch (e) {
+    res.json({ message: e.message });
+  }
+}
+
+async function updateMealToday(req, res) {
+  const today = helpers.retrieveTodaysDate();
+  try {
+    const [todaysMeal] = await Meal.findByDate(today);
 
     if (!todaysMeal) {
       throw new Error("Could not find today's meal.");
@@ -125,23 +137,16 @@ async function updateMealToday(req, res) {
 }
 
 async function updateMealOnDate(req, res) {
+  const date = helpers.checkParseCleanDate(
+    (dateString = req.params.date),
+    (sep = "-"),
+    (monthStart = 1),
+    (dayStart = 0)
+  );
   try {
-    const finalDateObj = helpers.checkParseCleanDate(
-      (dateString = req.params.date),
-      (sep = "-"),
-      (monthStart = 1),
-      (dayStart = 1)
-    );
-    let [meal] = await Meal.find({
-      date: {
-        $gte: finalDateObj,
-        $lt: helpers.addDays(finalDateObj, 1),
-      },
-    });
+    const [meal] = await Meal.findByDate(date);
     if (!meal) {
-      throw new Error(
-        `Could not find meal on date ${finalDateObj.toDateString()}`
-      );
+      throw new Error(`Could not find meal on date ${date.toDateString()}`);
     }
 
     if (req.body.title) {
@@ -163,7 +168,10 @@ async function removeMealOnId(req, res) {
     const removedMeal = await Meal.findByIdAndRemove(req.params.id);
     res.status(200).json(removedMeal);
   } catch (e) {
-    res.json({ message: e.message });
+    res.json({
+      message: e.message,
+      messageFromDeveloper: `Probably unknown id: ${req.params.id}`,
+    });
   }
 }
 

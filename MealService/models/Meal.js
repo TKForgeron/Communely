@@ -1,5 +1,6 @@
 const { default: mongoose, mongo } = require("mongoose");
 const userSchema = require("./User");
+const helpers = require("../controllers/helpers");
 
 const mealSchema = mongoose.Schema({
   title: String,
@@ -26,7 +27,7 @@ const mealSchema = mongoose.Schema({
 });
 
 mealSchema.statics.findByTitle = function (title) {
-  return this.where("title").equals(new RegExp(title, "i"));
+  return this.find({ title: new RegExp(title, "i") });
 };
 
 mealSchema.statics.findByTitleAndRemove = async function (title) {
@@ -35,6 +36,25 @@ mealSchema.statics.findByTitleAndRemove = async function (title) {
     meal.remove();
   });
   return mealsToBeRemoved;
+};
+
+mealSchema.statics.findByDate = function (date) {
+  // works same as method used in this.findByTitle()
+  return this.where("date")
+    .gte(helpers.addDays(date, 0).getTime())
+    .lt(helpers.addDays(date, 1).getTime());
+
+  // return this.find({
+  //   date: {
+  //     $gte: helpers.addDays(date, 0).getTime(),
+  //     $lt: helpers.addDays(date, 1).getTime(),
+  //   },
+  // });
+};
+
+mealSchema.statics.findByDateBetween = function (date1, date2) {
+  // works same as method used in this.findByTitle()
+  return this.where("date").gte(date1.getTime()).lt(date2.getTime());
 };
 
 module.exports = mongoose.model("Meals", mealSchema);

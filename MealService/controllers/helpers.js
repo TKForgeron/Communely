@@ -1,12 +1,26 @@
 module.exports = {
   checkParseCleanDate,
+  retrieveTodaysDate,
   addDays,
 };
 
-// Adding addDays functionality to Date class
-function addDays(date, days) {
+// Function that adds days to a given date
+function addDays(passedDate, days) {
+  date = new Date(passedDate);
   date.setDate(date.getDate() + days);
   return date;
+}
+
+// Function that retrieves the date of today in a Date object
+function retrieveTodaysDate() {
+  const todayString = new Date().toISOString().split("T")[0];
+  const today = checkParseCleanDate(
+    (dateString = todayString),
+    (sep = "-"),
+    (monthStart = 1),
+    (dayStart = 0)
+  ); // pass iso date string to cleaning function, for uniformity
+  return today;
 }
 
 // Function that applies regex and parses datestrings
